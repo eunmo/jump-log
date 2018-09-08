@@ -5,6 +5,10 @@ var fs = require('fs');
 
 module.exports = function(router, db) {
 
+	const titleNormMap = {
+		'まんがコント55号': '漫画コント55号',
+	};
+
 	var getIssue = async function(issue) {
 		const query = "SELECT id FROM issues WHERE rel = \'" + issue.rel + "\'";
 		
@@ -31,7 +35,11 @@ module.exports = function(router, db) {
 	}
 
 	var getTitle = async function(title) {
-		const name = title.title;
+		var name = title.title;
+
+		if (titleNormMap[name])
+			name = titleNormMap[name];
+
 		const query = "SELECT id FROM titles WHERE name = \'" + name + "\';";
 		
 		var result = await db.promisifyQuery(query);
@@ -65,7 +73,7 @@ module.exports = function(router, db) {
 	}
 
 	router.get('/api/old/insert/:_id', function (req, res) {
-		const file = path.join(__dirname, '../../../perl/data/', req.params._id);
+		const file = path.join(__dirname, '../../../db/data/', req.params._id);
 		fs.readFile(file, async function(err, data) {
 			const json = JSON.parse(data);
 
@@ -76,7 +84,9 @@ module.exports = function(router, db) {
 
 			var issue = { rel: json.date.replace(/\//g, '-'), num: json.number, cnum: json.cnum };
 			await getIssue(issue);
-			await Promise.all(json.list.map(row => getTitle(row)));
+			for (var i = 0; i < json.list.length; i++) {
+				await getTitle(json.list[i]);
+			}
 			await insertEpisodes(issue, json);
 			res.sendStatus(200);
 		});

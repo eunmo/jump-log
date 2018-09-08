@@ -8,6 +8,8 @@ const routes = require('./routes/index');
 app.use(express.static(path.join(__dirname, '../build')));
 app.use(express.static(path.join(__dirname, '../img')));
 
+app.use(express.json());
+
 app.use('/', routes);
 
 module.exports = app;

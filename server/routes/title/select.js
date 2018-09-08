@@ -2,7 +2,7 @@
 
 module.exports = function(router, db) {
 
-	router.get('/api/title/all', async function (req, res) {
+	router.get('/api/title/select/all', async function (req, res) {
 		const query1 =
 			"SELECT id, count(*) count, max(issueId) max, min(issueId) min, name, author, complete, yomikiri" +
 			 " FROM titles t, episodes e"+
