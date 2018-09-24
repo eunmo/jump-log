@@ -54,3 +54,12 @@ body {
 	display: none;
 }
 
+.overflow-hidden, .overflow-hidden div {
+  overflow: hidden;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
