@@ -13,7 +13,7 @@ export default class Recent extends Component {
 			gridColumnGap: '10px',
 		};
     
-		this.state = {titles: [], selectedYear: 1968, gridStyle: gridStyle};
+		this.state = {titles: [], selectedYear: 2018, gridStyle: gridStyle};
 
 		this.selectYear = this.selectYear.bind(this);
 		this.startEdit = this.startEdit.bind(this);
@@ -91,7 +91,7 @@ export default class Recent extends Component {
 			years.push(<div key={i}/>);
 		}
 
-		for (i = 1968; i < 2018; i++) {
+		for (i = 1968; i <= 2018; i++) {
 			years.push(this.getYearView(i));
 		}
 

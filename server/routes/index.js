@@ -24,7 +24,7 @@ fs.readdirSync(__dirname)
 	});
 
 router.get('*', function (req, res) {
-	res.sendFile(path.resolve('build', 'index.html'));
+	res.sendFile(path.join(__dirname, '../../build/index.html'));
 });
 
 module.exports = router;

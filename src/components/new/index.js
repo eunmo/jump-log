@@ -60,7 +60,7 @@ export default class NewIssue extends Component {
 					{this.state.titles.map(title => 
 						<div key={title.name} className="overflow-hidden" onClick={() => this.addEpisode(title)}>
 							<div className="ellipsis">{this.state.episodes.includes(title) ? title.name : <b>{title.name}</b>}</div>
-							<div className="ellipsis">{title.author}</div>
+							<div className="ellipsis gray">{title.author}</div>
 						</div>
 					)}
 					<div onClick={this.addNew}><b>Add new series</b></div>
