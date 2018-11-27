@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 
 import './style.css';
 
@@ -6,16 +7,9 @@ export default class Recent extends Component {
 
   constructor(props) {
     super(props);
-
-		const gridStyle = {
-			display: 'grid',
-			gridTemplateColumns: '50px 30px 1fr 50px 200px 60px',
-			gridColumnGap: '10px',
-		};
     
-		this.state = {titles: [], selectedYear: 2018, gridStyle: gridStyle};
+		this.state = {titles: [], year: this.props.match.params.year};
 
-		this.selectYear = this.selectYear.bind(this);
 		this.startEdit = this.startEdit.bind(this);
 		this.cancelEdit = this.cancelEdit.bind(this);
 		this.commit = this.commit.bind(this);
@@ -24,57 +18,88 @@ export default class Recent extends Component {
   }
 
   componentDidMount() {
-    this.fetch();
+    this.fetch(this.state.year);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const year = nextProps.match.params.year;
+
+    if (year !== this.state.year) {
+      this.setState({titles: [], year: year});
+      this.fetch(year);
+    }
   }
 
 	render() {
 		const titles = this.state.titles;
 		if (titles.length === 0)
-			return null;
+			return (<div>{this.getYearSelector()}</div>);
 		
 		const issueMap = this.getIssueMap();
-		const year = this.state.selectedYear;
-		const filteredTitles = titles.filter(t => Number.parseInt(issueMap[t.min].substring(0, 4), 10) === year);
 
 		return (
 			<div>
 				{this.getYearSelector()}
 				<br/>
 				<br/>
-				{filteredTitles.map(title => [
-					<div key={title.id} style={this.getTitleRowStyle(title)}>
-						<div className="text-right">{title.id}</div>
+				{this.state.titles.map(title => [
+					<div key={title.id} className="Titles-grid" style={this.getTitleRowStyle(title)}>
+						<div className="text-right hide-mobile">{title.id}</div>
 						<div className="text-center">{title.complete ? '完' : ''}</div>
-						<div>
-							<div>{title.name}</div>
-							<div style={{color: 'gray'}}>{title.author}</div>
+						<div className="overflow-hidden">
+							<div className="ellipsis">{title.name}</div>
+							<div className="ellipsis hide-mobile" style={{color: 'gray'}}>{title.author}</div>
 						</div>
 						<div className="text-right">{title.count}</div>
-						<div>{issueMap[title.min]}-{issueMap[title.max]}</div>
+						<div className="Titles-run">{issueMap[title.min]}-{issueMap[title.max]}</div>
 						{this.state.selectedTitle === title ?
-							<button onClick={() => this.cancelEdit()}>Cancel</button> :
-							<button onClick={() => this.startEdit(title)}>Edit</button>}
+							<button className="hide-mobile" onClick={() => this.cancelEdit()}>Cancel</button> :
+							<button className="hide-mobile" onClick={() => this.startEdit(title)}>Edit</button>}
 					</div>,
 					this.getEditView(title)
 				])}
+				<br/>
 			</div>
 		);
 	}
 
-	getTitleRowStyle(title) {
-		if (title.yomikiri)
-			return Object.assign({background: '#eeeeee'}, this.state.gridStyle);
+	sortTitles(a, b) {
+		if (a.yomikiri && b.yomikiri)
+			return a.id - b.id;
 
-		return this.state.gridStyle;
+		if (a.yomikiri)
+			return 1;
+
+		if (b.yomikiri)
+			return -1;
+
+		return a.id - b.id;
 	}
 
-	getYearView(year) {
+	getTitleRowStyle(title) {
+		if (title.yomikiri)
+			return {background: '#eeeeee'};
+
+		return {};
+	}
+
+	getYearView(year, style) {
 		var inner = year;
 
-		if (this.state.selectedYear === year)
-			inner = <b>{year}</b>;
+		if (year < 3000) {
+			inner = (
+				<span>
+					<span className="show-mobile">{(year + '').substring(2, 4)}</span>
+					<span className="hide-mobile">{year}</span>
+				</span>
+			);
+		}
 
-		return <div key={year} onClick={() => this.selectYear(year)}>{inner}</div>;
+		return (
+			<NavLink to={"/titles/" + year } key={year} style={style} activeStyle={{fontWeight: 'bold'}}>
+				{inner}
+			</NavLink>
+		);
 	}
 
 	getYearSelector() {
@@ -86,10 +111,10 @@ export default class Recent extends Component {
 
 		var years = [];
 		var i;
-
-		for (i = 1960; i < 1968; i++) {
-			years.push(<div key={i}/>);
-		}
+	
+		if (window.innerWidth > 543)
+			years.push(this.getYearView('new', {gridColumn: '6'}));
+		years.push(this.getYearView('current', {gridColumn: '7 / 9'}));
 
 		for (i = 1968; i <= 2018; i++) {
 			years.push(this.getYearView(i));
@@ -168,9 +193,9 @@ export default class Recent extends Component {
     .then(() => {	that.fetch(); });
 	}
 
-	fetch() {
+	fetch(year) {
 		const that = this;
-		const url = '/api/title/select/all';
+		const url = '/api/title/select/' + year;
 
 		fetch(url)
     .then(function(response) {

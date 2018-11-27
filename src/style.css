@@ -67,3 +67,19 @@ body {
 .gray {
 	color: gray;
 }
+
+a {
+  color: hotpink;
+  text-decoration: none;
+}
+
+
+@media screen and (max-width: 543px) {
+  .hide-mobile {
+    display: none;
+  }
+
+  .show-mobile {
+    display: inline;
+  }
+}
