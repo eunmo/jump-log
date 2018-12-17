@@ -8,7 +8,7 @@ const Routes = (props) => (
   <BrowserRouter>
     <div>
       <Switch>
-        <Redirect from="/" to="/titles/2018" exact={true} />
+        <Redirect from="/" to="/titles/current" exact={true} />
         <Redirect from="/titles/new" to="/new" exact={true} />
         <Route path="/titles/:year" component={Titles} />
         <Route path="/new" component={NewIssue} />

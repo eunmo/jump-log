@@ -116,7 +116,7 @@ export default class Recent extends Component {
 			years.push(this.getYearView('new', {gridColumn: '6'}));
 		years.push(this.getYearView('current', {gridColumn: '7 / 9'}));
 
-		for (i = 1968; i <= 2018; i++) {
+		for (i = 1968; i <= 2019; i++) {
 			years.push(this.getYearView(i));
 		}
 
