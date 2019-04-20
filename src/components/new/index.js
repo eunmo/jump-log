@@ -179,7 +179,12 @@ export default class NewIssue extends Component {
 		var episodes = [];
 		if (this.state.loadedData) {
 			var map = {};
-			data.forEach(row => { map[row.name] = row; });
+			data.forEach(row => {
+				if (row.name === 'BORUTO-ボルト- -NARUTO NEXT GENERATIONS-') {
+					map['BORUTO―ボルト―'] = row;
+				}
+				map[row.name] = row;
+			});
 			this.state.loadedData.forEach((item, index) => {
 				let row = map[item.title];
 				if (row) {
