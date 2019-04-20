@@ -7,7 +7,13 @@ export default class NewIssue extends Component {
 	constructor(props) {
     super(props);
 
-		this.state = {episodes: [], titles: [], issue: {date: '', num: '', cnum: ''}};
+		var state =  {episodes: [], titles: [], issue: {date: '', num: '', cnum: ''}};
+
+		if (props.match.params.data) {
+			state.loadedData = JSON.parse(props.match.params.data);
+		}
+
+		this.state = state;
 
 		this.addEpisode = this.addEpisode.bind(this);
 		this.addNew = this.addNew.bind(this);
@@ -105,7 +111,7 @@ export default class NewIssue extends Component {
 											<input type="text" name="author" value={entry.author} onChange={event => this.type(event, entry)} style={textInputStyle} />
 										</div>
 										<div>
-											<input type="checkbox" name="yomikiri" defaultChecked={entry.color === 1} onChange={event => this.check(event, entry)}/> 読切
+											<input type="checkbox" name="yomikiri" defaultChecked={entry.yomikiri === 1} onChange={event => this.check(event, entry)}/> 読切
 											<span style={{display: 'inline-block', width: '10px'}}/>
 											<input type="checkbox" name="color" defaultChecked={entry.color === 1} onChange={event => this.check(event, entry)}/> Color
 										</div>
@@ -169,6 +175,26 @@ export default class NewIssue extends Component {
     .then(() => {	that.props.history.push('/'); });
 	}
 
+	onData(data) {
+		var episodes = [];
+		if (this.state.loadedData) {
+			var map = {};
+			data.forEach(row => { map[row.name] = row; });
+			this.state.loadedData.forEach((item, index) => {
+				let row = map[item.title];
+				if (row) {
+					if (index === 0)
+						row.color = 1;
+					episodes.push(row);
+				} else {
+					episodes.push({name: item.title, author: item.creator, yomikiri: 1});
+				}
+			});
+			console.log(data);
+		}
+		this.setState({titles: data, episodes: episodes});
+	}
+
 	fetch() {
 		const that = this;
 		const url = '/api/new/select';
@@ -178,7 +204,7 @@ export default class NewIssue extends Component {
       return response.json();
     })
     .then(function(data) {
-			that.setState({titles: data});
+			that.onData(data);
 		});
 	}
 }

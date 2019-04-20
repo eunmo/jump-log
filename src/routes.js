@@ -11,6 +11,7 @@ const Routes = (props) => (
         <Redirect from="/" to="/titles/current" exact={true} />
         <Redirect from="/titles/new" to="/new" exact={true} />
         <Route path="/titles/:year" component={Titles} />
+        <Route path="/new/:data" component={NewIssue} />
         <Route path="/new" component={NewIssue} />
       </Switch>
     </div>
