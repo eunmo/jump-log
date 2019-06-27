@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Titles from './components/titles';
 import NewIssue from './components/new';
 
-const Routes = (props) => (
+const Routes = props => (
   <BrowserRouter>
     <div>
       <Switch>
@@ -19,4 +19,3 @@ const Routes = (props) => (
 );
 
 export default Routes;
-
