@@ -28,10 +28,8 @@ toc.childNodes.forEach(item => {
   list.push({ title: title, creator: creator });
 });
 
-var url = "http://13.230.33.104:3070/new/" + JSON.stringify(list);
+var url = "http://13.230.33.104:3070/new/" + encodeURIComponent(JSON.stringify(list));
 var jump = window.open(url, '_blank', 'toolbar=0,location=0,menubar=0');
-jump.jumpdata = JSON.stringify(list);
-console.log(jump.jumpdata);
 
 tocButton.click();
 };
