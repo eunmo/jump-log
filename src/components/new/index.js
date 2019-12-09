@@ -13,7 +13,9 @@ export default class NewIssue extends Component {
     };
 
     if (props.match.params.data) {
-      state.loadedData = JSON.parse(props.match.params.data);
+      state.loadedData = JSON.parse(
+        decodeURIComponent(props.match.params.data)
+      );
     }
 
     this.state = state;
